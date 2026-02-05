@@ -13,7 +13,7 @@
         android:enableOnBackInvokedCallback="false"
         android:allowBackup="false"
         >
-      
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -23,52 +23,45 @@
             android:hardwareAccelerated="true"
             android:resizeableActivity="true"
             android:windowSoftInputMode="adjustResize">
+
             <!--Allowing support for multi windows (split-screen mode) & picture-in-picture mode -->
             <meta-data android:name="android.allow_multiple_resumed_activities" android:value="true" />
             <!--Disable Flutter's built-in deep linking -->
             <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
+
             <!-- support sharing images -->
-             <intent-filter
-                 android:label="@string/create_post">
+            <intent-filter android:label="@string/create_post">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
             </intent-filter>
-            <!--support sharing text --> 
-            <intent-filter
-                android:label="@string/create_post">
+
+            <!--support sharing text -->
+            <intent-filter android:label="@string/create_post">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
 
-
-            <!-- Specifies an Android theme to apply to this Activity as soon as
-                 the Android process has started. This theme is visible to the user
-                 while the Flutter UI initializes. After that, this theme continues
-                 to determine the Window background behind the Flutter UI. -->
             <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+                />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- App Link --> 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="thunderapp.dev" />
-            </intent-filter>
-            <!-- Custom Scheme -->
+
+            <!-- Custom Scheme (brandizzato) -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />        
-                <data android:scheme="thunder"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="calciototalelive"/>
             </intent-filter>
+
+            <!-- Instance list (lascia invariato) -->
             <intent-filter>
               <action android:name="android.intent.action.VIEW" />
               <category android:name="android.intent.category.DEFAULT" />
@@ -127,8 +120,7 @@
               <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity>
-        <!-- Don't delete the meta-data below.
-             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
