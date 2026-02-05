@@ -11,7 +11,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.hjiangsu.thunder"
+    namespace "com.alfonso.calciototalelive"
     compileSdkVersion rootProject.ext.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -27,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.hjiangsu.thunder"
+        applicationId "com.alfonso.calciototalelive"
         minSdk = flutter.minSdkVersion
         targetSdk rootProject.ext.targetSdkVersion
         versionCode = flutter.versionCode
@@ -56,12 +56,12 @@ android {
     productFlavors {
         production {
             dimension "default"
-            resValue "string", "app_name", "Thunder"
+            resValue "string", "app_name", "Calcio Totale Live"
             applicationIdSuffix ""
         }
         development {
             dimension "default"
-            resValue "string", "app_name", "Thunder"
+            resValue "string", "app_name", "Calcio Totale Live"
             applicationIdSuffix ".dev"
         }
     }
