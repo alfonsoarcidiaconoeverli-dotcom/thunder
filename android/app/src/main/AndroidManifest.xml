@@ -14,6 +14,11 @@
         android:allowBackup="false"
         >
 
+        <!-- ✅ AdMob App ID -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6445825465110921~9729159391" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
