@@ -4,6 +4,24 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
@@ -12,8 +30,12 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.alfonso.calciototalelive"
+    
+    // CORRETTO: ora queste proprietà esistono in rootProject.ext
     compileSdkVersion rootProject.ext.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    
+    // IMPORTANTE: Flutter gestisce ndkVersion automaticamente
+    ndkVersion flutter.ndkVersion
 
     compileOptions {
         // The following line is required by flutter_local_notifications
@@ -23,15 +45,21 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17
+        jvmTarget = '17'  // Stringa, non JavaVersion.VERSION_17
     }
 
     defaultConfig {
         applicationId "com.alfonso.calciototalelive"
-        minSdk = flutter.minSdkVersion
-        targetSdk rootProject.ext.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        // Usa minSdk definito in ext o fallback a flutter.minSdkVersion
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion  // targetSdkVersion non targetSdk
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        
+        // Per build a 64-bit
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+        }
     }
 
     signingConfigs {
@@ -41,9 +69,21 @@ android {
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
+        
+        debug {
+            // Configurazione debug esplicita
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        
         release {
             minifyEnabled true
             shrinkResources true
@@ -61,8 +101,16 @@ android {
         }
         development {
             dimension "default"
-            resValue "string", "app_name", "Calcio Totale Live"
+            resValue "string", "app_name", "Calcio Totale Live Dev"
             applicationIdSuffix ".dev"
+        }
+    }
+    
+    // Risolvi conflitti di dipendenze
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.core:core-ktx:1.12.0'
+            force 'androidx.appcompat:appcompat:1.6.1'
         }
     }
 }
