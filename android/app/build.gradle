@@ -4,19 +4,21 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+import java.util.Properties
+
 def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
+def localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
+    localPropertiesFile.withReader("UTF-8") { reader ->
         localProperties.load(reader)
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
-def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
+def flutterVersionCode = (localProperties.getProperty("flutter.versionCode") ?: "1").toInteger()
+def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
 
 def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
+def keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
@@ -24,19 +26,16 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.alfonso.calciototalelive"
 
-    def compileSdk = 34
-    def minSdk = 24
-    def targetSdk = 34
-
-    compileSdkVersion compileSdk
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     defaultConfig {
         applicationId "com.alfonso.calciototalelive"
-        minSdkVersion minSdk
-        targetSdkVersion targetSdk
-        versionCode flutterVersionCode.toInteger()
+        minSdkVersion 24
+        targetSdkVersion 34
+        versionCode flutterVersionCode
         versionName flutterVersionName
+
         multiDexEnabled true
     }
 
@@ -47,27 +46,27 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = "17"
     }
 
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
         }
 
-        // release lo lasciamo pronto, ma NON mettiamo fallback strani
+        // Release pronta: verrà usata solo se esiste key.properties
         release {
             if (keystorePropertiesFile.exists()) {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-                storePassword keystoreProperties['storePassword']
-                def sf = keystoreProperties['storeFile']
-                if (sf != null) {
+                def sf = keystoreProperties["storeFile"]
+                if (sf != null && sf.toString().trim().length() > 0) {
                     storeFile file(sf)
                 }
+                storePassword keystoreProperties["storePassword"]
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
             }
         }
     }
@@ -81,11 +80,16 @@ android {
         }
 
         release {
-            // Per ora NON firmare release se vuoi solo APK subito
-            // signingConfig signingConfigs.release   <-- lo attiverai quando hai key.properties
+            // Se hai key.properties, abilita firma release
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+            debuggable false
             minifyEnabled false
             shrinkResources false
-            debuggable false
+
+            // (Quando farai Play Store: poi metteremo minify/shrink + proguard)
+            // proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
 
@@ -100,14 +104,11 @@ android {
     }
 }
 
-flutter {
-    source '../..'
+dependencies {
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.4"
+    implementation "androidx.multidex:multidex:2.0.1"
 }
 
-dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
+flutter {
+    source "../.."
 }
