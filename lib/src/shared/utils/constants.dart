@@ -50,7 +50,6 @@ const String SETTINGS_GENERAL_PAGE = '/settings/general';
 const String SETTINGS_FILTERS_PAGE = '/settings/filters';
 const String SETTINGS_APPEARANCE_PAGE = '/settings/appearance';
 const String SETTINGS_GESTURES_PAGE = '/settings/gestures';
-const String SETTINGS_FAB_PAGE = '/settings/fab';
 const String SETTINGS_ACCESSIBILITY_PAGE = '/settings/accessibility';
 const String SETTINGS_ACCOUNT_PAGE = '/settings/account';
 const String SETTINGS_ACCOUNT_LANGUAGES_PAGE = '/settings/account/languages';
@@ -65,11 +64,13 @@ const String SETTINGS_APPEARANCE_THEMES_PAGE = '/settings/appearance/themes';
 
 const String SETTINGS_VIDEO_PAGE = '/settings/video';
 
-const String THUNDER_SERVER_URL = 'https://thunderapp.dev';
+// ✅ Cambiato: non usare thunderapp.dev come riferimento nell'app brandizzata
+const String THUNDER_SERVER_URL = 'https://feddit.it';
 
 const Color DARK_THEME_BACKGROUND_COLOR = Color.fromARGB(255, 50, 50, 50);
 const Color LIGHT_THEME_BACKGROUND_COLOR = Color.fromARGB(255, 242, 242, 242);
 
 const double APP_BAR_HEIGHT = 70.0;
 
-const DEFAULT_INSTANCE = 'lemmy.world';
+// ✅ Cambiato: istanza predefinita italiana
+const DEFAULT_INSTANCE = 'feddit.it';
