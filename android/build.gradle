@@ -7,19 +7,23 @@ buildscript {
     }
 
     dependencies {
-        // Android Gradle Plugin - versione compatibile con Flutter
+        // IMPORTANTE: AGP 8.3.2 per Java 17 e SDK 36
         classpath 'com.android.tools.build:gradle:8.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
+}
+
+// PROPRIETÀ GLOBALI - QUESTE SONO MANCANTI!
+ext {
+    compileSdkVersion = 36  // O 34 se vuoi più stabilità
+    targetSdkVersion = 36   // O 34
+    minSdkVersion = 24      // Flutter default è 19, ma per Java 17 serve almeno 24
 }
 
 allprojects {
     repositories {
         google()
         mavenCentral()
-        
-        // Eventuali repository aggiuntive se necessario
-        // maven { url 'https://jitpack.io' }
     }
 }
 
@@ -32,17 +36,4 @@ subprojects {
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
-}
-
-// Configurazioni globali (se necessario per altri moduli)
-ext {
-    // Usa compileSdk 34 invece di 36 per maggiore compatibilità
-    compileSdkVersion = 34
-    targetSdkVersion = 34
-    minSdkVersion = 21
-    
-    // Versioni delle librerie (se usi dipendenze Android native)
-    appCompatVersion = "1.6.1"
-    materialVersion = "1.11.0"
-    constraintLayoutVersion = "2.1.4"
 }
