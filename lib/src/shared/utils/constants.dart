@@ -62,9 +62,12 @@ const String SETTINGS_APPEARANCE_POSTS_PAGE = '/settings/appearance/posts';
 const String SETTINGS_APPEARANCE_COMMENTS_PAGE = '/settings/appearance/comments';
 const String SETTINGS_APPEARANCE_THEMES_PAGE = '/settings/appearance/themes';
 
+/// ✅ FIX BUILD: mancava questa costante (usata in navigation.dart e settings_page.dart)
+const String SETTINGS_FAB_PAGE = '/settings/fab';
+
 const String SETTINGS_VIDEO_PAGE = '/settings/video';
 
-// ✅ Cambiato: non usare thunderapp.dev come riferimento nell'app brandizzata
+/// ✅ Cambiato: non usare thunderapp.dev come riferimento nell'app brandizzata
 const String THUNDER_SERVER_URL = 'https://feddit.it';
 
 const Color DARK_THEME_BACKGROUND_COLOR = Color.fromARGB(255, 50, 50, 50);
@@ -72,5 +75,5 @@ const Color LIGHT_THEME_BACKGROUND_COLOR = Color.fromARGB(255, 242, 242, 242);
 
 const double APP_BAR_HEIGHT = 70.0;
 
-// ✅ Cambiato: istanza predefinita italiana
+/// ✅ Cambiato: istanza predefinita italiana
 const DEFAULT_INSTANCE = 'feddit.it';
