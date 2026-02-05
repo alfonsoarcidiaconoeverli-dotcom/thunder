@@ -1,4 +1,4 @@
-name: thunder
+name: calcio_totale_live
 description: An open-source cross-platform Lemmy client for iOS and Android built with Flutter
 publish_to: none
 version: 0.8.6+95
@@ -102,24 +102,3 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   sqflite: ^2.4.0
   sqflite_common_ffi: ^2.3.4
-
-flutter:
-  uses-material-design: true
-  generate: true
-  assets:
-    - assets/logo.png
-    - assets/logo_monochrome.png
-    - assets/logo_android.png
-    - assets/logo_android_background.png
-    - assets/logo_android_monochrome.png
-    - assets/ca/
-  fonts:
-    - family: Thunder
-      fonts:
-        - asset: fonts/Thunder.ttf
-  config:
-    enable-swift-package-manager: true
-
-flutter_native_splash:
-  image: assets/logo.png
-  color: 212123
