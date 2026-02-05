@@ -26,16 +26,16 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.alfonso.calciototalelive"
 
-    compileSdkVersion 34
+    // FIX: richiesto dalle dipendenze (androidx / media3)
+    compileSdkVersion 36
     ndkVersion flutter.ndkVersion
 
     defaultConfig {
         applicationId "com.alfonso.calciototalelive"
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdkVersion 36
         versionCode flutterVersionCode
         versionName flutterVersionName
-
         multiDexEnabled true
     }
 
@@ -57,7 +57,6 @@ android {
             keyPassword "android"
         }
 
-        // Release pronta: verrà usata solo se esiste key.properties
         release {
             if (keystorePropertiesFile.exists()) {
                 def sf = keystoreProperties["storeFile"]
@@ -80,16 +79,12 @@ android {
         }
 
         release {
-            // Se hai key.properties, abilita firma release
             if (keystorePropertiesFile.exists()) {
                 signingConfig signingConfigs.release
             }
             debuggable false
             minifyEnabled false
             shrinkResources false
-
-            // (Quando farai Play Store: poi metteremo minify/shrink + proguard)
-            // proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
 
