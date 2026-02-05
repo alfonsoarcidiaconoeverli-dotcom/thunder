@@ -12,6 +12,11 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
     flutterVersionCode = '1'
@@ -31,45 +36,44 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.alfonso.calciototalelive"
     
-    // CORRETTO: ora queste proprietà esistono in rootProject.ext
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    // Verifica se ext esiste, altrimenti usa valori di default
+    def compileSdk = rootProject.hasProperty('ext') ? rootProject.ext.compileSdkVersion : 34
+    def minSdk = rootProject.hasProperty('ext') ? rootProject.ext.minSdkVersion : 24
+    def targetSdk = rootProject.hasProperty('ext') ? rootProject.ext.targetSdkVersion : 34
     
-    // IMPORTANTE: Flutter gestisce ndkVersion automaticamente
+    compileSdkVersion compileSdk
+    
+    // Flutter gestisce ndkVersion automaticamente
     ndkVersion flutter.ndkVersion
 
     compileOptions {
-        // The following line is required by flutter_local_notifications
+        // Required for flutter_local_notifications and Java 17 features
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '17'  // Stringa, non JavaVersion.VERSION_17
+        jvmTarget = '17'
     }
 
     defaultConfig {
         applicationId "com.alfonso.calciototalelive"
-        // Usa minSdk definito in ext o fallback a flutter.minSdkVersion
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion  // targetSdkVersion non targetSdk
+        minSdkVersion minSdk
+        targetSdkVersion targetSdk
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         
-        // Per build a 64-bit
+        // MultiDex per app con molte dipendenze
+        multiDexEnabled true
+        
+        // ABI filters per ridurre dimensione APK
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
         }
     }
 
     signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
-        }
-        
         debug {
             // Configurazione debug esplicita
             storeFile file('debug.keystore')
@@ -77,18 +81,34 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        
+        release {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                storePassword keystoreProperties['storePassword']
+            } else {
+                // Fallback a debug se key.properties non esiste (per CI)
+                signingConfig signingConfigs.debug
+            }
+        }
     }
 
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
         }
         
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            signingConfig signingConfigs.release
+            debuggable false
         }
     }
 
@@ -106,12 +126,34 @@ android {
         }
     }
     
-    // Risolvi conflitti di dipendenze
+    // Risolvi conflitti di dipendenze comuni
     configurations.all {
         resolutionStrategy {
             force 'androidx.core:core-ktx:1.12.0'
             force 'androidx.appcompat:appcompat:1.6.1'
+            force 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
+            force 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+            
+            // Se usi Google Mobile Ads, specifica una versione
+            force 'com.google.android.gms:play-services-ads:23.0.0'
         }
+    }
+    
+    // Per evitare errori di "64K reference limit"
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    
+    // Abilita view binding se necessario
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+    
+    // Configurazione lint (opzionale)
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 
@@ -120,7 +162,20 @@ flutter {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.window:window:1.0.0'
     implementation 'androidx.window:window-java:1.0.0'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+    
+    // MultiDex support (importante per app grandi)
+    implementation 'androidx.multidex:multidex:2.0.1'
+    
+    // Dipendenze core Android (aggiunte per stabilità)
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    
+    // Lifecycle components (utili per molti plugin Flutter)
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
 }
