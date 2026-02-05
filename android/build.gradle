@@ -7,23 +7,33 @@ buildscript {
     }
 
     dependencies {
-        // IMPORTANTE: AGP 8.3.2 per Java 17 e SDK 36
-        classpath 'com.android.tools.build:gradle:8.3.2'
+        // Android Gradle Plugin 8.4.0 compatibile con Gradle 8.11.1
+        classpath 'com.android.tools.build:gradle:8.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
-// PROPRIETÀ GLOBALI - QUESTE SONO MANCANTI!
+// Configurazioni globali per tutto il progetto
 ext {
-    compileSdkVersion = 36  // O 34 se vuoi più stabilità
-    targetSdkVersion = 36   // O 34
-    minSdkVersion = 24      // Flutter default è 19, ma per Java 17 serve almeno 24
+    compileSdkVersion = 34
+    targetSdkVersion = 34
+    minSdkVersion = 24
+    
+    // Versioni delle librerie Android (se necessarie per moduli nativi)
+    appCompatVersion = "1.6.1"
+    materialVersion = "1.11.0"
+    constraintLayoutVersion = "2.1.4"
+    coreKtxVersion = "1.12.0"
 }
 
 allprojects {
     repositories {
         google()
         mavenCentral()
+        
+        // Repository aggiuntive (se necessario)
+        // maven { url 'https://jitpack.io' }
+        // maven { url 'https://storage.googleapis.com/download.flutter.io' }
     }
 }
 
@@ -31,6 +41,9 @@ rootProject.buildDir = '../build'
 
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+
+subprojects {
     project.evaluationDependsOn(':app')
 }
 
