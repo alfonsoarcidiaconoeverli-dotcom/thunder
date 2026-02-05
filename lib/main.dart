@@ -7,6 +7,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// ✅ AdMob
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
 // Package imports
 import "package:flutter_displaymode/flutter_displaymode.dart";
 import 'package:dart_ping_ios/dart_ping_ios.dart';
@@ -52,6 +55,9 @@ void initializeDatabase() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ✅ Initialize AdMob (must be before showing any ads)
+  await MobileAds.instance.initialize();
 
   // Initializes the UserPreferences singleton
   await UserPreferences.instance.initialize();
@@ -198,7 +204,7 @@ class _ThunderAppState extends State<ThunderApp> {
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               });
 
-              // Customize our themes with the aforementinoed page transitions, as well as some custom styling
+              // Customize our themes with the aforementioned page transitions, as well as some custom styling
               theme = theme.copyWith(
                 pageTransitionsTheme: pageTransitionsTheme,
                 inputDecorationTheme: InputDecorationTheme(
@@ -234,7 +240,7 @@ class _ThunderAppState extends State<ThunderApp> {
                           BlocProvider(create: (context) => FeedBloc(account: account)),
                         ],
                         child: MaterialApp(
-                          title: 'Thunder',
+                          title: 'Calcio Totale Live',
                           locale: locale,
                           localizationsDelegates: const [
                             ...AppLocalizations.localizationsDelegates,
